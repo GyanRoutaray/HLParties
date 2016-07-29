@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
+// MARK: - Instance Variables
     var window: UIWindow?
     var userId:String = ""
     var idToken:String = ""
@@ -17,10 +18,106 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     var givenName:String = ""
     var familyName:String = ""
     var email:String = ""
+    var gender:String = ""
+    var imageUrl:String = ""
     var loginVC:LoginController = LoginController()
     
-  
     
+    
+//MARK: - Sign in with Google Delegate-methods
+    func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!, withError error: NSError!){
+        if (error == nil) {
+            self.userId = user.userID
+            self.idToken = user.authentication.idToken
+            self.fullName = user.profile.name
+            self.givenName = user.profile.givenName
+            self.familyName = user.profile.familyName
+            self.email = user.profile.email
+            self.getmoreDetailsOfuser(user)
+            let authentication = user.authentication
+            let credential = FIRGoogleAuthProvider.credentialWithIDToken(authentication.idToken, accessToken: authentication.accessToken)
+            self.signinWithFirebase(credential)
+            
+        } else {
+            print("\(error.localizedDescription)")
+        }
+        
+    }
+    
+//Get more details of google user
+    func getmoreDetailsOfuser(user:GIDGoogleUser) {
+        let url = NSURL(string: "https://www.googleapis.com/oauth2/v3/userinfo?access_token=\(user.authentication.accessToken)")
+        let session = NSURLSession.sharedSession()
+        let task =  session.dataTaskWithURL(url!) {(data, response, error ) -> Void  in guard error == nil && data != nil else {
+                return
+            }
+            do {
+                let userData = try NSJSONSerialization.JSONObjectWithData(data!, options:[]) as! NSDictionary
+                self.gender = userData["gender"] as! String
+                self.imageUrl = userData["picture"] as! String
+            } catch {
+                NSLog("Account Information could not be loaded")
+            }
+        }
+        task.resume()
+
+    }
+//Sign-in to Firebase with Google credentials got from Google-SignIn
+    func signinWithFirebase(credential:FIRAuthCredential) {
+        FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
+            if let userFIR = user{
+                print(userFIR)
+                let user_id:String = userFIR.uid
+                print(user_id)
+                print(FIRAuth.auth()?.currentUser?.uid)
+                self.loginVC.navigateToDashBoard()
+            }
+            else{
+                print("Error in sign-in with Firebase")
+                print(error?.localizedDescription)
+            }
+        }
+    }
+   
+//Write about this method
+    func signIn(signIn: GIDSignIn!, didDisconnectWithUser user:GIDGoogleUser!,
+                withError error: NSError!) {
+    }
+
+    
+//Write about this method
+    func application(application: UIApplication,
+                     openURL url: NSURL, options: [String: AnyObject]) -> Bool {
+        return GIDSignIn.sharedInstance().handleURL(url,
+                                                    sourceApplication: options[UIApplicationOpenURLOptionsSourceApplicationKey] as? String,
+                                                    annotation: options[UIApplicationOpenURLOptionsAnnotationKey])
+    }
+    
+    
+//app to run on iOS 8 and older,also implement the below method.
+    func application(application: UIApplication,
+                     openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+
+        return GIDSignIn.sharedInstance().handleURL(url,
+                                                    sourceApplication: sourceApplication,
+                                                    annotation: annotation)
+    }
+    
+    
+/*
+//Otherway writing of the above method
+    func application(application: UIApplication,
+                     openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        var options: [String: AnyObject] = [UIApplicationOpenURLOptionsSourceApplicationKey: sourceApplication!,
+                                            UIApplicationOpenURLOptionsAnnotationKey: annotation]
+        return GIDSignIn.sharedInstance().handleURL(url, sourceApplication: options[UIApplicationOpenURLOptionsSourceApplicationKey] as! String, annotation: options[UIApplicationOpenURLOptionsAnnotationKey])
+    }
+*/
+    
+    
+
+ 
+// MARK: - AppDelagate delegate-methods
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         FIRApp.configure()
         loginVC = LoginController(nibName: "LoginController",bundle: nil)
@@ -36,47 +133,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         GIDSignIn.sharedInstance().delegate = self
         
         return true
-    }
-
-    
-    
-    func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!, withError error: NSError!){
-        if (error == nil) {
-            // Perform any operations on signed in user here.
-            userId = user.userID                  // For client-side use only!
-            idToken = user.authentication.idToken // Safe to send to the server
-            fullName = user.profile.name
-            givenName = user.profile.givenName
-            familyName = user.profile.familyName
-            email = user.profile.email
-            
-            let authentication = user.authentication
-            let credential = FIRGoogleAuthProvider.credentialWithIDToken(authentication.idToken,
-                                                                         accessToken: authentication.accessToken)
-            
-            FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
-                if let userFIR = user{
-                    print(userFIR)
-                    var user_id:String = userFIR.uid
-                    print(user_id)
-                    print(FIRAuth.auth()?.currentUser?.uid)
-                    self.loginVC.signInWithFirebase()
-
-                }
-                else{
-                    print("Error")
-                }
-            }
-            
-        } else {
-            print("\(error.localizedDescription)")
-        }
-        
-    }
-    
-    
-    func signIn(signIn: GIDSignIn!, didDisconnectWithUser user:GIDGoogleUser!,
-                withError error: NSError!) {
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -100,22 +156,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-    func application(application: UIApplication,
-                     openURL url: NSURL, options: [String: AnyObject]) -> Bool {
-        return GIDSignIn.sharedInstance().handleURL(url,
-                                                    sourceApplication: options[UIApplicationOpenURLOptionsSourceApplicationKey] as? String,
-                                                    annotation: options[UIApplicationOpenURLOptionsAnnotationKey])
-    }
-    
-    //app to run on iOS 8 and older,also implement the deprecated application:openURL:sourceApplication:annotation: method.
-    func application(application: UIApplication,
-                     openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
-        var options: [String: AnyObject] = [UIApplicationOpenURLOptionsSourceApplicationKey: sourceApplication!,
-                                            UIApplicationOpenURLOptionsAnnotationKey: annotation!]
-        return GIDSignIn.sharedInstance().handleURL(url,
-                                                    sourceApplication: sourceApplication,
-                                                    annotation: annotation)
-    }
-
 }
 

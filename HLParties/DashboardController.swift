@@ -7,31 +7,54 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class DashboardController: UIViewController {
-
+    @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var userNameLabel: UILabel!
+    var imageUrlStr:NSURL? = NSURL()
+    var username:String? = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Dashboard"
         self.navigationController?.navigationBarHidden = false
         self.navigationItem.setHidesBackButton(true, animated:false);
         
-    }
+        let logoutButton:UIButton = UIButton()
+        logoutButton.frame = CGRectMake(0, 0, 60, 30)
+        logoutButton.setTitle("Logout", forState: .Normal)
+        logoutButton.addTarget(self, action: #selector(logoutButtonAction), forControlEvents: .TouchUpInside)
+        logoutButton.setTitleColor(UIColor.init(red: (174/255), green: (49/255), blue: (44/255), alpha: 1), forState: .Normal)
+        
+        let rightBarButton:UIBarButtonItem = UIBarButtonItem(customView: logoutButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
+        
+        if let user = FIRAuth.auth()?.currentUser {
+            imageUrlStr = user.photoURL
+            if let usrName = user.displayName {
+                username = usrName
+            }
+            self.userNameLabel.text = username
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        } else {
+            print("No user is signed in.")
+        }
+        if let url = imageUrlStr {
+            self.profileImageView.sd_setImageWithURL(url)
+        }
+
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+//Logout user from Firebase and also from google.
+    func logoutButtonAction() {
+        try! FIRAuth.auth()!.signOut()
+        GIDSignIn.sharedInstance().signOut()
+        print("Logout button pressed")
+        self.navigationController?.popViewControllerAnimated(true)
     }
-    */
-
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
 }

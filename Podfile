@@ -9,4 +9,5 @@ target 'HLParties' do
     pod 'Firebase'
     pod 'Google/SignIn'
     pod 'Firebase/Auth'
+    pod 'SDWebImage'
 end
