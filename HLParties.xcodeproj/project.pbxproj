@@ -14,10 +14,12 @@
 		8379F2E21D4B56AB00D031FB /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379F2E01D4B56AB00D031FB /* LoginController.swift */; };
 		8379F2E31D4B56AB00D031FB /* LoginController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8379F2E11D4B56AB00D031FB /* LoginController.xib */; };
 		8379F2E91D4B629700D031FB /* libz.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8379F2E81D4B629700D031FB /* libz.1.dylib */; };
-		8379F2EC1D4B88B400D031FB /* DashboardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379F2EA1D4B88B400D031FB /* DashboardController.swift */; };
-		8379F2ED1D4B88B400D031FB /* DashboardController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8379F2EB1D4B88B400D031FB /* DashboardController.xib */; };
+		8379F2EC1D4B88B400D031FB /* ProfileConroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8379F2EA1D4B88B400D031FB /* ProfileConroller.swift */; };
+		8379F2ED1D4B88B400D031FB /* ProfileConroller.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8379F2EB1D4B88B400D031FB /* ProfileConroller.xib */; };
 		837FFE691D4C914E008F7BCE /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 837FFE671D4C914E008F7BCE /* EditProfileController.swift */; };
 		837FFE6A1D4C914E008F7BCE /* EditProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837FFE681D4C914E008F7BCE /* EditProfileController.xib */; };
+		83861B2C1D4D39BB003CE80A /* DashboardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83861B2A1D4D39BB003CE80A /* DashboardController.swift */; };
+		83861B2D1D4D39BB003CE80A /* DashboardController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83861B2B1D4D39BB003CE80A /* DashboardController.xib */; };
 		9F2BFC665760969B5AD4D3BA /* Pods_HLParties.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EAAA5EDBAA1926C4D7E8976 /* Pods_HLParties.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,10 +34,12 @@
 		8379F2E11D4B56AB00D031FB /* LoginController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoginController.xib; path = ../../LoginController.xib; sourceTree = "<group>"; };
 		8379F2E41D4B5F4D00D031FB /* HLParties-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HLParties-Bridging-Header.h"; sourceTree = "<group>"; };
 		8379F2E81D4B629700D031FB /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
-		8379F2EA1D4B88B400D031FB /* DashboardController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardController.swift; sourceTree = "<group>"; };
-		8379F2EB1D4B88B400D031FB /* DashboardController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DashboardController.xib; sourceTree = "<group>"; };
+		8379F2EA1D4B88B400D031FB /* ProfileConroller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileConroller.swift; sourceTree = "<group>"; };
+		8379F2EB1D4B88B400D031FB /* ProfileConroller.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileConroller.xib; sourceTree = "<group>"; };
 		837FFE671D4C914E008F7BCE /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
 		837FFE681D4C914E008F7BCE /* EditProfileController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditProfileController.xib; sourceTree = "<group>"; };
+		83861B2A1D4D39BB003CE80A /* DashboardController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardController.swift; sourceTree = "<group>"; };
+		83861B2B1D4D39BB003CE80A /* DashboardController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DashboardController.xib; sourceTree = "<group>"; };
 		9EAAA5EDBAA1926C4D7E8976 /* Pods_HLParties.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HLParties.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EBF5ED1090E69CFD006EC74 /* Pods-HLParties.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLParties.release.xcconfig"; path = "Pods/Target Support Files/Pods-HLParties/Pods-HLParties.release.xcconfig"; sourceTree = "<group>"; };
 		E6D2D1526258FD158B65C1BF /* Pods-HLParties.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLParties.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HLParties/Pods-HLParties.debug.xcconfig"; sourceTree = "<group>"; };
@@ -96,8 +100,10 @@
 				8379F2CC1D4B3E4A00D031FB /* AppDelegate.swift */,
 				8379F2E01D4B56AB00D031FB /* LoginController.swift */,
 				8379F2E11D4B56AB00D031FB /* LoginController.xib */,
-				8379F2EA1D4B88B400D031FB /* DashboardController.swift */,
-				8379F2EB1D4B88B400D031FB /* DashboardController.xib */,
+				83861B2A1D4D39BB003CE80A /* DashboardController.swift */,
+				83861B2B1D4D39BB003CE80A /* DashboardController.xib */,
+				8379F2EA1D4B88B400D031FB /* ProfileConroller.swift */,
+				8379F2EB1D4B88B400D031FB /* ProfileConroller.xib */,
 				837FFE671D4C914E008F7BCE /* EditProfileController.swift */,
 				837FFE681D4C914E008F7BCE /* EditProfileController.xib */,
 				8379F2D31D4B3E4A00D031FB /* Assets.xcassets */,
@@ -172,8 +178,9 @@
 			files = (
 				8379F2D71D4B3E4A00D031FB /* LaunchScreen.storyboard in Resources */,
 				837FFE6A1D4C914E008F7BCE /* EditProfileController.xib in Resources */,
-				8379F2ED1D4B88B400D031FB /* DashboardController.xib in Resources */,
+				8379F2ED1D4B88B400D031FB /* ProfileConroller.xib in Resources */,
 				8379F2E31D4B56AB00D031FB /* LoginController.xib in Resources */,
+				83861B2D1D4D39BB003CE80A /* DashboardController.xib in Resources */,
 				8379F2DF1D4B3E9600D031FB /* GoogleService-Info.plist in Resources */,
 				8379F2D41D4B3E4A00D031FB /* Assets.xcassets in Resources */,
 			);
@@ -236,7 +243,8 @@
 			files = (
 				8379F2E21D4B56AB00D031FB /* LoginController.swift in Sources */,
 				837FFE691D4C914E008F7BCE /* EditProfileController.swift in Sources */,
-				8379F2EC1D4B88B400D031FB /* DashboardController.swift in Sources */,
+				83861B2C1D4D39BB003CE80A /* DashboardController.swift in Sources */,
+				8379F2EC1D4B88B400D031FB /* ProfileConroller.swift in Sources */,
 				8379F2CD1D4B3E4A00D031FB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

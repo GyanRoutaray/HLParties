@@ -2,37 +2,38 @@
 //  DashboardController.swift
 //  HLParties
 //
-//  Created by Gyan Routray on 29/07/16.
+//  Created by Gyan Routray on 31/07/16.
 //  Copyright © 2016 GyanPro. All rights reserved.
 //
 
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
-class DashboardController: UIViewController {
-//MARK: -
-    @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var profileDetailsView: UIView!
-    @IBOutlet weak var editButton: UIButton!
-    @IBOutlet weak var companyLabel: UILabel!
-    @IBOutlet weak var designationLabel: UILabel!
-    @IBOutlet weak var technologyLabel: UILabel!
-    @IBOutlet weak var emailLabel: UILabel!
-    @IBOutlet weak var mobileNoLabel: UILabel!
-    @IBOutlet weak var experirnceItLabel: UILabel!
-    
-    var imageUrlStr:NSURL? = NSURL()
-    var username:String? = ""
-    var userUid:String = ""
-    
-//MARK: -
 
+class DashboardController: UIViewController {
+    var profileImageButton:UIButton = UIButton()
+    var titleViewButton:UIButton = UIButton()
+
+    var imageUrlStr:NSURL? = NSURL()
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Dashboard"
-        self.navigationController?.navigationBarHidden = false
-        self.navigationItem.setHidesBackButton(true, animated:false);
+        profileImageButton = UIButton(frame:CGRectMake(0, 0, 40, 40))
+        profileImageButton.addTarget(self, action: #selector(navigateToProfilePage), forControlEvents: .TouchUpInside)
+        profileImageButton.layer.borderColor = UIColor.init(red: (174/255), green: (49/255), blue: (44/255), alpha: 1).CGColor
+        profileImageButton.layer.borderWidth = 1.0
+        profileImageButton.layer.cornerRadius = 20.0
+        profileImageButton.layer.masksToBounds = true
+        
+        titleViewButton = UIButton(frame:CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width-150, 40))
+        titleViewButton.addTarget(self, action: #selector(navigateToProfilePage), forControlEvents: .TouchUpInside)
+
+        titleViewButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        titleViewButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Left;
+        
+        let barTitleView:UIBarButtonItem = UIBarButtonItem(customView:titleViewButton)
+        
+        let leftBarView:UIBarButtonItem = UIBarButtonItem(customView:profileImageButton)
+        self.navigationItem.leftBarButtonItems = [leftBarView,barTitleView]
         
         let logoutButton:UIButton = UIButton()
         logoutButton.frame = CGRectMake(0, 0, 60, 30)
@@ -41,92 +42,75 @@ class DashboardController: UIViewController {
         logoutButton.setTitleColor(UIColor.init(red: (174/255), green: (49/255), blue: (44/255), alpha: 1), forState: .Normal)
         let rightBarButton:UIBarButtonItem = UIBarButtonItem(customView: logoutButton)
         self.navigationItem.rightBarButtonItem = rightBarButton
+
         
-        self.profileDetailsView.layer.borderColor = UIColor.init(red: (174/255), green: (49/255), blue: (44/255), alpha: 1).CGColor
-        self.profileDetailsView.layer.borderWidth = 1.0
-        
-//        if let user = FIRAuth.auth()?.currentUser {
-//            imageUrlStr = user.photoURL
-//            if let usrName = user.displayName {
-//                username = usrName
-//            }
-//            self.userNameLabel.text = username
-//
-//        } else {
-//            print("No user is signed in.")
-//        }
+        self.navigationController?.navigationBarHidden = false
+        self.navigationItem.setHidesBackButton(true, animated:false);
+
         self.getUserDetails()
-        
+    }
+    
+    func navigateToProfilePage() {
+        let dashboardVC:ProfileConroller = ProfileConroller(nibName: "ProfileConroller",bundle: nil)
+        self.navigationController?.pushViewController(dashboardVC, animated: true)
+
     }
     
     func getUserDetails() {
         let ref = FIRDatabase.database().reference()
         let userID = FIRAuth.auth()?.currentUser?.uid
         ref.child("users").child(userID!).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-        if let snap: FIRDataSnapshot = snapshot{
-            print(snap.value)
-            self.addObserVerForProfileChnages()
-        }
+            if let snap: FIRDataSnapshot = snapshot{
+                print(snap.value)
+                self.addObserVerForProfileChnages()
+            }
         })
-    
-        
-////Get users based on a perticular child-value.
-//        let ref = FIRDatabase.database().reference()
-//        let userID = FIRAuth.auth()?.currentUser?.uid
-//        ref.child("users").queryOrderedByChild("it_experience").queryEqualToValue("4").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-//            if let snap: FIRDataSnapshot = snapshot{
-//                print(snap.value)
-//                //self.addObserVerForProfileChnages()
-//            }
-//        })
     }
     
- // Listen for any profile update in the Firebase database
-    func addObserVerForProfileChnages() {
-        let UID =  FIRAuth.auth()?.currentUser?.uid
-        let commentsRef = FIRDatabase.database().reference()
-        
-        commentsRef.child("users").child(UID!).observeEventType(.Value, withBlock: { (snapshot) in
-            if let snap: FIRDataSnapshot = snapshot {
-                print(snap.key)
-                if (snap.value is NSNull){
-                }else{
-                    if let snapValue:AnyObject = snap.value!{
-                        self.setUpDashBoard(snapValue as! Dictionary)
+// Listen for any profile update in the Firebase database
+        func addObserVerForProfileChnages() {
+            let UID =  FIRAuth.auth()?.currentUser?.uid
+            let commentsRef = FIRDatabase.database().reference()
+            
+            commentsRef.child("users").child(UID!).observeEventType(.Value, withBlock: { (snapshot) in
+                if let snap: FIRDataSnapshot = snapshot {
+                    print(snap.key)
+                    if (snap.value is NSNull){
+                    }else{
+                        if let snapValue:AnyObject = snap.value!{
+                            self.setUpDashBoard(snapValue as! Dictionary)
+                        }
+                        
                     }
-
+                }
+            })
+            
+        }
+        
+        func setUpDashBoard(dict : Dictionary <String, String>) {
+            print(dict)
+            titleViewButton.setTitle(dict["name"], forState:.Normal)
+            if let urlStr = dict["photo_url"]{
+                imageUrlStr = NSURL(string:urlStr)
+                if let url = imageUrlStr {
+                   //let profileImageButton.sd_setImageWithURL(url)
+                    profileImageButton.sd_setBackgroundImageWithURL(url, forState: .Normal)
                 }
             }
-        })
-
-    }
-    
-    func setUpDashBoard(dict : Dictionary <String, String>) {
-        print(dict)
-        self.userNameLabel.text = dict["name"]
-        self.companyLabel.text = dict["company_name"]
-        self.designationLabel.text = dict["designation"]
-        self.technologyLabel.text = dict["technology"]
-        self.emailLabel.text = dict["email"]
-        self.mobileNoLabel.text = dict["mobile_no"]
-        self.experirnceItLabel.text = dict["it_experience"]
-        
-        if let urlStr = dict["photo_url"]{
-            imageUrlStr = NSURL(string:urlStr)
-            if let url = imageUrlStr {
-                self.profileImageView.sd_setImageWithURL(url)
-            }
+            
         }
 
-        
-    }
     
-//MARK: - Navigate to edit page
-    @IBAction func editButtonAction(sender: AnyObject) {
-        let editProfileVC:EditProfileController = EditProfileController(nibName: "EditProfileController", bundle: nil)
-        self.navigationController?.pushViewController(editProfileVC, animated: true)
+    @IBAction func allPrtiesButtonAction(sender: AnyObject) {
     }
-    
+    @IBAction func allEmployeesButtonAction(sender: AnyObject) {
+    }
+    @IBAction func partyGivenButtonAction(sender: AnyObject) {
+    }
+    @IBAction func partyReceivedButtonAction(sender: AnyObject) {
+    }
+    @IBAction func newPartyButtonAction(sender: AnyObject) {
+    }
 //MARK: - Logout
 //Logout user from Firebase and also from google.
     func logoutButtonAction() {
@@ -135,7 +119,12 @@ class DashboardController: UIViewController {
         print("Logout button pressed")
         self.navigationController?.popViewControllerAnimated(true)
     }
+    
+        
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+        
     }
-}
+
+
+  }
