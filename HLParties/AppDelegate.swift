@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 let user_id:String = userFIR.uid
                 print(user_id)
                 print(FIRAuth.auth()?.currentUser?.uid)
-                self.loginVC.navigateToDashBoard()
+                self.loginVC.getDataForCurrentUser()
             }
             else{
                 print("Error in sign-in with Firebase")
